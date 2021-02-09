@@ -2,9 +2,9 @@ package TestSpring.Main.Model;
 
 
 import org.springframework.data.annotation.Id;
-import org.springframework.stereotype.Component;
+import org.springframework.data.mongodb.core.mapping.Document;
 
-@Component
+@Document(collection = "Task")
 public class TaskModel {
 
     @Id
