@@ -39,26 +39,62 @@ public class TaskController {
         return taskList;
     }
 
+    @GetMapping(path = "task")
+    public List<Object> findSingleTask(@RequestParam String taskId) {
+
+        TaskModel savedTask = this.taskRepo.findById(taskId).get();
+
+        if (this.taskRepo.findById(taskId).isPresent()) {
+
+            return List.of(savedTask);
+
+        } else {
+
+            return List.of(new ResponseEntity<Object>("Could find Task with the provied ID", HttpStatus.NOT_FOUND));
+        }
+        
+    }
+
 
     @PostMapping(path = "task")
     public List<Object> createSingleTask(@RequestHeader("Content-Type") String contentType, @RequestBody TaskModel task) {
-
-
-        this.taskRepo.findOne(Example.of(task));
 
         Optional<TaskModel> taskSearch = this.taskRepo.findOne(Example.of(task));
 
 
         if (taskSearch.isEmpty()) {
 
-            TaskModel saveTask = new TaskModel();
-            saveTask = task;
-            this.taskRepo.save(saveTask);
-            return List.of(saveTask);
-
+            TaskModel savedTask = new TaskModel();
+            savedTask = task;
+            this.taskRepo.save(savedTask);
+            return List.of(new ResponseEntity<Object>(savedTask, HttpStatus.ACCEPTED));
 
         } else {
-            return List.of(new ResponseEntity<Object>("Already Exists", HttpStatus.NOT_FOUND));
+            return List.of(new ResponseEntity<Object>("Already Exists", HttpStatus.CONFLICT));
+
+        }
+
+    }
+
+    @PutMapping(path = "task")
+    public List<Object> updateTask(@RequestParam String taskId, @RequestBody TaskModel task) {
+
+
+        TaskModel savedTask = this.taskRepo.findById(taskId).get();
+
+
+        if (this.taskRepo.findById(taskId).isPresent()) {
+            savedTask.setDescription(task.getDescription());
+            savedTask.setAuthor(task.getAuthor());
+            savedTask.setGroup(task.getGroup());
+
+            this.taskRepo.save(savedTask);
+
+            return List.of(new ResponseEntity<Object>(savedTask, HttpStatus.ACCEPTED));
+
+        } else {
+
+            return List.of(new ResponseEntity<Object>("Could not Modify", HttpStatus.BAD_REQUEST));
 
         }
 
