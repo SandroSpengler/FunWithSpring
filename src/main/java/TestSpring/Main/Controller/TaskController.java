@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
+@CrossOrigin
 @RequestMapping(path = "/api")
 public class TaskController {
 
@@ -52,7 +53,7 @@ public class TaskController {
 
             return List.of(new ResponseEntity<Object>("Could find Task with the provied ID", HttpStatus.NOT_FOUND));
         }
-        
+
     }
 
 
@@ -98,6 +99,25 @@ public class TaskController {
 
         }
 
+    }
+
+
+    @DeleteMapping(path = "task")
+    public List<Object> removeTask(@RequestParam String taskId) {
+
+
+        TaskModel savedTask = this.taskRepo.findById(taskId).get();
+
+        if (this.taskRepo.findById(taskId).isPresent()) {
+
+            this.taskRepo.deleteById(taskId);
+
+            return List.of(new ResponseEntity<Object>("Task deleted", HttpStatus.ACCEPTED));
+
+        } else {
+
+            return List.of(new ResponseEntity<Object>("Could not find Task by ID", HttpStatus.NOT_FOUND));
+        }
 
     }
 
