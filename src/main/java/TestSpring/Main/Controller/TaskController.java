@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,7 +29,8 @@ public class TaskController {
     @GetMapping(path = "/")
     public List<String> testFunction() {
 
-        System.out.println("Hey");
+        this.dateTest();
+
         return List.of("Hello", "World");
     }
 
@@ -80,7 +82,6 @@ public class TaskController {
     @PutMapping(path = "task")
     public List<Object> updateTask(@RequestParam String taskId, @RequestBody TaskModel task) {
 
-
         TaskModel savedTask = this.taskRepo.findById(taskId).get();
 
 
@@ -88,6 +89,8 @@ public class TaskController {
             savedTask.setDescription(task.getDescription());
             savedTask.setAuthor(task.getAuthor());
             savedTask.setGroup(task.getGroup());
+            savedTask.setCreatedDate(task.getCreatedDate());
+            savedTask.setDueDate(task.getDueDate());
 
             this.taskRepo.save(savedTask);
 
@@ -129,5 +132,21 @@ public class TaskController {
             return false;
         }
     }
+
+
+    private void dateTest() {
+
+        LocalDateTime exampleDate;
+
+        String ownDateString = "2018-05-05T11:50:55";
+
+        exampleDate = LocalDateTime.now();
+        System.out.println(exampleDate);
+
+        exampleDate = LocalDateTime.parse(ownDateString);
+        System.out.println(exampleDate);
+
+    }
+
 
 }

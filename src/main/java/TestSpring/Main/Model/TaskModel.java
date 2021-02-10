@@ -1,20 +1,20 @@
 package TestSpring.Main.Model;
 
 
-import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.util.Date;
 
 @Document(collection = "Task")
 public class TaskModel {
 
     @Id
-    @CreatedBy
+    @CreatedDate
 
     private String id;
-    private Date createdBy;
+    private String createdDate;
+    private String dueDate;
     private String description;
     private String author;
     private String group;
@@ -27,12 +27,20 @@ public class TaskModel {
         this.id = id;
     }
 
-    public Date getCreatedDate() {
-        return createdBy;
+    public String getCreatedDate() {
+        return createdDate;
     }
 
-    public void setCreatedDate(Date createdDate) {
-        this.createdBy = createdDate;
+    public void setCreatedDate(String createdDate) {
+        this.createdDate = createdDate;
+    }
+
+    public String getDueDate() {
+        return dueDate;
+    }
+
+    public void setDueDate(String dueDate) {
+        this.dueDate = dueDate;
     }
 
     public String getDescription() {
