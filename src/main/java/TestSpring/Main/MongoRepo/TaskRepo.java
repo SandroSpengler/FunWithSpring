@@ -7,6 +7,10 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface TaskRepo extends MongoRepository<TaskModel, String> {
 
-//    public abstract TaskModel findByDescription(String desc);
+    public abstract TaskModel findByDescription(String desc);
+
+    public abstract TaskModel findByAuthor(String author);
+
+    public abstract TaskModel findByGroup(String author);
 
 }
