@@ -8,7 +8,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,8 +31,6 @@ public class TaskController {
 
     @GetMapping(path = "/")
     public List<String> testFunction() {
-
-        this.dateTest();
 
         return List.of("Hello", "World");
     }
@@ -55,6 +56,36 @@ public class TaskController {
 
             return List.of(new ResponseEntity<Object>("Could find Task with the provied ID", HttpStatus.NOT_FOUND));
         }
+
+    }
+
+    @GetMapping(path = "sortTasks")
+    public List<TaskModel> sortTasksByDate() {
+
+        String startDate = "2021-02-5T00:32:34";
+        String endDate = "2021-02-12T00:32:34";
+
+        List<TaskModel> listOfTasks = this.taskRepo.findAll();
+
+        listOfTasks.sort(new Comparator<TaskModel>() {
+            @Override
+            public int compare(TaskModel o1, TaskModel o2) {
+                DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+                String date1 = o1.getDueDate();
+                String date2 = o2.getDueDate();
+
+
+                try {
+                    return dateFormat.parse(date1).compareTo(dateFormat.parse(date2));
+                } catch (ParseException e) {
+                    throw new IllegalArgumentException(e);
+                }
+            }
+
+
+        });
+
+        return listOfTasks;
 
     }
 
@@ -132,21 +163,4 @@ public class TaskController {
             return false;
         }
     }
-
-
-    private void dateTest() {
-
-        LocalDateTime exampleDate;
-
-        String ownDateString = "2018-05-05T11:50:55";
-
-        exampleDate = LocalDateTime.now();
-        System.out.println(exampleDate);
-
-        exampleDate = LocalDateTime.parse(ownDateString);
-        System.out.println(exampleDate);
-
-    }
-
-
 }

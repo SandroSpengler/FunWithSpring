@@ -58,6 +58,7 @@ public class TaskModel {
     public void setAuthor(String author) {
         this.author = author;
     }
+    
 
     public String getGroup() {
         return group;

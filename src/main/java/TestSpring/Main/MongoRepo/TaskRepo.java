@@ -12,5 +12,6 @@ public interface TaskRepo extends MongoRepository<TaskModel, String> {
     public abstract TaskModel findByAuthor(String author);
 
     public abstract TaskModel findByGroup(String author);
+    
 
 }
