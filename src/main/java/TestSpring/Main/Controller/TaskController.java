@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@CrossOrigin
+@CrossOrigin()
 @RequestMapping(path = "/api")
 public class TaskController {
 
@@ -64,8 +64,6 @@ public class TaskController {
     @GetMapping(path = "sortTasks")
     public List<TaskModel> sortTasksByDate() {
 
-        String startDate = "2021-02-5T00:32:34";
-        String endDate = "2021-02-12T00:32:34";
 
         List<TaskModel> listOfTasks = this.taskRepo.findAll();
 
