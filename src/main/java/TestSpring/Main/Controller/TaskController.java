@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -32,7 +33,8 @@ public class TaskController {
     @GetMapping(path = "/")
     public List<String> testFunction() {
 
-        return List.of("Hello", "World");
+        return List.of("Hello");
+
     }
 
     @GetMapping(path = "/tasks")
@@ -81,11 +83,41 @@ public class TaskController {
                     throw new IllegalArgumentException(e);
                 }
             }
-
-
         });
 
         return listOfTasks;
+
+
+    }
+
+    @GetMapping(path = "/sortedTaskRange")
+    public List<TaskModel> taskDateRange(@RequestParam String startDate, @RequestParam String endDate) {
+
+
+        List<TaskModel> listOfAllSortedTasks = this.sortTasksByDate();
+        List<TaskModel> listOfSortedTasksRange = new ArrayList<TaskModel>();
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+
+
+        for (TaskModel tm : listOfAllSortedTasks) {
+
+            try {
+                if (dateFormat.parse(tm.getDueDate()).compareTo(dateFormat.parse(startDate)) > 0) {
+                    if (dateFormat.parse(tm.getDueDate()).compareTo(dateFormat.parse(endDate)) < 0) {
+
+                        listOfSortedTasksRange.add(tm);
+
+                    }
+                }
+
+            } catch (ParseException e) {
+
+                throw new IllegalArgumentException(e);
+
+            }
+        }
+
+        return listOfSortedTasksRange;
 
     }
 
@@ -127,7 +159,9 @@ public class TaskController {
 
             return List.of(new ResponseEntity<Object>(savedTask, HttpStatus.ACCEPTED));
 
+
         } else {
+
 
             return List.of(new ResponseEntity<Object>("Could not Modify", HttpStatus.BAD_REQUEST));
 
@@ -163,4 +197,5 @@ public class TaskController {
             return false;
         }
     }
+
 }
