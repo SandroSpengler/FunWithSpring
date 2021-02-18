@@ -88,8 +88,38 @@ public class TaskController {
 
     }
 
-    @GetMapping(path = "/sortedTaskRange")
-    public List<TaskModel> taskDateRange(@RequestParam String startDate, @RequestParam String endDate) {
+    @GetMapping(path = "/sortedTaskByCreatedRange")
+    public List<TaskModel> taskCreatedByDateRange(@RequestParam String startDate, @RequestParam String endDate) {
+
+
+        List<TaskModel> listOfAllSortedTasks = this.sortTasksByDate();
+        List<TaskModel> listOfSortedTasksRange = new ArrayList<TaskModel>();
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+
+
+        for (TaskModel tm : listOfAllSortedTasks) {
+
+            try {
+                if (dateFormat.parse(tm.getCreatedDate()).compareTo(dateFormat.parse(startDate)) > 0) {
+                    if (dateFormat.parse(tm.getCreatedDate()).compareTo(dateFormat.parse(endDate)) < 0) {
+
+                        listOfSortedTasksRange.add(tm);
+
+                    }
+                }
+
+            } catch (ParseException e) {
+
+                throw new IllegalArgumentException(e);
+
+            }
+        }
+
+        return listOfSortedTasksRange;
+    }
+
+    @GetMapping(path = "/sortedTaskByDueRange")
+    public List<TaskModel> taskDateDueByRange(@RequestParam String startDate, @RequestParam String endDate) {
 
 
         List<TaskModel> listOfAllSortedTasks = this.sortTasksByDate();
@@ -116,7 +146,6 @@ public class TaskController {
         }
 
         return listOfSortedTasksRange;
-
     }
 
 
