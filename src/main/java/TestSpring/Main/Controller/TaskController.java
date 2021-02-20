@@ -100,8 +100,8 @@ public class TaskController {
         for (TaskModel tm : listOfAllSortedTasks) {
 
             try {
-                if (dateFormat.parse(tm.getCreatedDate()).compareTo(dateFormat.parse(startDate)) > 0) {
-                    if (dateFormat.parse(tm.getCreatedDate()).compareTo(dateFormat.parse(endDate)) < 0) {
+                if (dateFormat.parse(tm.getCreatedDate()).compareTo(dateFormat.parse(startDate)) >= 0) {
+                    if (dateFormat.parse(tm.getCreatedDate()).compareTo(dateFormat.parse(endDate)) <= 0) {
 
                         listOfSortedTasksRange.add(tm);
 
@@ -130,11 +130,10 @@ public class TaskController {
         for (TaskModel tm : listOfAllSortedTasks) {
 
             try {
-                if (dateFormat.parse(tm.getDueDate()).compareTo(dateFormat.parse(startDate)) > 0) {
-                    if (dateFormat.parse(tm.getDueDate()).compareTo(dateFormat.parse(endDate)) < 0) {
+                if (dateFormat.parse(tm.getDueDate()).compareTo(dateFormat.parse(startDate)) >= 0) {
+                    if (dateFormat.parse(tm.getDueDate()).compareTo(dateFormat.parse(endDate)) <= 0) {
 
                         listOfSortedTasksRange.add(tm);
-
                     }
                 }
 
