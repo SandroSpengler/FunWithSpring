@@ -195,7 +195,7 @@ public class TaskController {
 
     }
 
-
+    @CrossOrigin()
     @DeleteMapping(path = "task")
     public List<Object> removeTask(@RequestParam String taskId) {
 
