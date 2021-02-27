@@ -70,17 +70,23 @@ public class TaskController {
         listOfTasks.sort(new Comparator<TaskModel>() {
             @Override
             public int compare(TaskModel o1, TaskModel o2) {
+
                 DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
                 String date1 = o1.getDueDate();
                 String date2 = o2.getDueDate();
 
-
                 try {
+
+
                     return dateFormat.parse(date1).compareTo(dateFormat.parse(date2));
+
+
                 } catch (ParseException e) {
+
                     throw new IllegalArgumentException(e);
                 }
             }
+
         });
 
         return listOfTasks;
@@ -100,6 +106,7 @@ public class TaskController {
         for (TaskModel tm : listOfAllSortedTasks) {
 
             try {
+
                 if (dateFormat.parse(tm.getCreatedDate()).compareTo(dateFormat.parse(startDate)) >= 0) {
                     if (dateFormat.parse(tm.getCreatedDate()).compareTo(dateFormat.parse(endDate)) <= 0) {
 
@@ -109,6 +116,7 @@ public class TaskController {
                 }
 
             } catch (ParseException e) {
+
 
                 throw new IllegalArgumentException(e);
 
@@ -154,17 +162,29 @@ public class TaskController {
         Optional<TaskModel> taskSearch = this.taskRepo.findOne(Example.of(task));
 
 
-        if (taskSearch.isEmpty()) {
+        try {
 
-            TaskModel savedTask = new TaskModel();
-            savedTask = task;
-            this.taskRepo.save(savedTask);
-            return List.of(new ResponseEntity<Object>(savedTask, HttpStatus.ACCEPTED));
+            if (taskSearch.isEmpty()) {
+                
+                if (this.checkIfDateIsParseable(task.getDueDate()) && this.checkIfDateIsParseable(task.getCreatedDate())) {
+//
+//                TaskModel savedTask = new TaskModel();
+//
+//                savedTask = task;
 
-        } else {
-            return List.of(new ResponseEntity<Object>("Already Exists", HttpStatus.CONFLICT));
+                    this.taskRepo.save(task);
+
+                    return List.of(new ResponseEntity<Object>(task, HttpStatus.ACCEPTED));
+
+                }
+            }
+
+        } catch (Exception e) {
 
         }
+
+        return List.of(new ResponseEntity<Object>("Couldn't create, Task probally already Exists", HttpStatus.CONFLICT));
+
 
     }
 
@@ -173,26 +193,26 @@ public class TaskController {
 
         TaskModel savedTask = this.taskRepo.findById(taskId).get();
 
+        try {
 
-        if (this.taskRepo.findById(taskId).isPresent()) {
-            savedTask.setDescription(task.getDescription());
-            savedTask.setAuthor(task.getAuthor());
-            savedTask.setGroup(task.getGroup());
-            savedTask.setCreatedDate(task.getCreatedDate());
-            savedTask.setDueDate(task.getDueDate());
+            if (this.taskRepo.findById(taskId).isPresent()) {
 
-            this.taskRepo.save(savedTask);
+                if (this.checkIfDateIsParseable(task.getDueDate()) && this.checkIfDateIsParseable(task.getCreatedDate())) {
 
-            return List.of(new ResponseEntity<Object>(savedTask, HttpStatus.ACCEPTED));
+                    savedTask = task;
 
+                    this.taskRepo.save(savedTask);
 
-        } else {
+                    return List.of(new ResponseEntity<Object>(savedTask, HttpStatus.ACCEPTED));
 
+                }
+            }
+        } catch (Exception e) {
 
             return List.of(new ResponseEntity<Object>("Could not Modify", HttpStatus.BAD_REQUEST));
-
         }
 
+        return List.of(new ResponseEntity<Object>("Could not Modify", HttpStatus.BAD_REQUEST));
     }
 
     @CrossOrigin()
@@ -223,5 +243,22 @@ public class TaskController {
             return false;
         }
     }
+
+    private Boolean checkIfDateIsParseable(String date) {
+
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+
+        try {
+            dateFormat.parse(date);
+            return true;
+
+        } catch (ParseException e) {
+
+            return false;
+        }
+
+
+    }
+
 
 }
