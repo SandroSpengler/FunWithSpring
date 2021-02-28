@@ -17,7 +17,6 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@CrossOrigin()
 @RequestMapping(path = "/api")
 public class TaskController {
 
@@ -156,6 +155,53 @@ public class TaskController {
     }
 
 
+    @GetMapping(path = "/completedTasks")
+    public List completedTasks(@RequestParam(required = false) Boolean showActive) {
+
+        List<TaskModel> allTasks = this.taskRepo.findAll();
+
+        if (showActive != null) {
+
+            try {
+
+                List<TaskModel> activeTasks = new ArrayList<TaskModel>();
+
+                for (TaskModel task : allTasks) {
+                    if (task.getCompleted()) {
+                        activeTasks.add(task);
+                    }
+                }
+
+                return activeTasks;
+            } catch (Exception e) {
+
+                return List.of(new ResponseEntity<Object>("No Tasks found or Tasks don't have a completed parameter", HttpStatus.CONFLICT));
+            }
+
+
+        } else {
+
+            try {
+
+                List<TaskModel> inactiveTasks = new ArrayList<TaskModel>();
+
+                for (TaskModel task : allTasks) {
+                    if (!task.getCompleted()) {
+                        inactiveTasks.add(task);
+                    }
+                }
+
+                return inactiveTasks;
+            } catch (Exception e) {
+
+                return List.of(new ResponseEntity<Object>("No Tasks found or Tasks don't have a completed parameter", HttpStatus.CONFLICT));
+            }
+
+
+        }
+
+    }
+
     @PostMapping(path = "task")
     public List<Object> createSingleTask(@RequestHeader("Content-Type") String contentType, @RequestBody TaskModel task) {
 
@@ -165,7 +211,7 @@ public class TaskController {
         try {
 
             if (taskSearch.isEmpty()) {
-                
+
                 if (this.checkIfDateIsParseable(task.getDueDate()) && this.checkIfDateIsParseable(task.getCreatedDate())) {
 //
 //                TaskModel savedTask = new TaskModel();
@@ -215,7 +261,31 @@ public class TaskController {
         return List.of(new ResponseEntity<Object>("Could not Modify", HttpStatus.BAD_REQUEST));
     }
 
-    @CrossOrigin()
+    @PutMapping(path = "/changeCompleteStatus")
+    public List<Object> changeCompleteStatus(@RequestParam Boolean completedStatus, @RequestParam String taskId) {
+
+        try {
+
+            TaskModel savedTask = this.taskRepo.findById(taskId).get();
+
+            if (savedTask != null) {
+
+                savedTask.setCompleted(completedStatus);
+
+                this.taskRepo.save(savedTask);
+
+                return List.of(savedTask);
+
+            }
+
+        } catch (Exception e) {
+
+            List.of(new ResponseEntity<Object>("Could not Modify", HttpStatus.BAD_REQUEST));
+        }
+
+        return List.of(new ResponseEntity<Object>("Could not Modify", HttpStatus.BAD_REQUEST));
+    }
+
     @DeleteMapping(path = "task")
     public List<Object> removeTask(@RequestParam String taskId) {
 

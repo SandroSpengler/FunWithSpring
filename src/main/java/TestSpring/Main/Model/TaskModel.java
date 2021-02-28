@@ -18,6 +18,7 @@ public class TaskModel {
     private String description;
     private String author;
     private String group;
+    private Boolean completed;
 
     public String getId() {
         return id;
@@ -67,13 +68,25 @@ public class TaskModel {
         this.group = group;
     }
 
+    public Boolean getCompleted() {
+        return completed;
+    }
+
+    public void setCompleted(Boolean completed) {
+        
+        this.completed = completed;
+    }
+
     @Override
     public String toString() {
         return "TaskModel{" +
                 "id='" + id + '\'' +
+                ", createdDate='" + createdDate + '\'' +
+                ", dueDate='" + dueDate + '\'' +
                 ", description='" + description + '\'' +
                 ", author='" + author + '\'' +
                 ", group='" + group + '\'' +
+                ", completed=" + completed +
                 '}';
     }
 }
