@@ -167,7 +167,7 @@ public class TaskController {
                 List<TaskModel> activeTasks = new ArrayList<TaskModel>();
 
                 for (TaskModel task : allTasks) {
-                    if (task.getCompleted()) {
+                    if (task.getCompleted() != null && task.getCompleted()) {
                         activeTasks.add(task);
                     }
                 }
@@ -186,7 +186,7 @@ public class TaskController {
                 List<TaskModel> inactiveTasks = new ArrayList<TaskModel>();
 
                 for (TaskModel task : allTasks) {
-                    if (!task.getCompleted()) {
+                    if (task.getCompleted() == null || !task.getCompleted()) {
                         inactiveTasks.add(task);
                     }
                 }
