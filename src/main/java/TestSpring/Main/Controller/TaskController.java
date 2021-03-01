@@ -32,6 +32,24 @@ public class TaskController {
     @GetMapping(path = "/")
     public List<String> testFunction() {
 
+        int seconds = 11732;
+        int minutes = 0;
+        int hours = 0;
+
+
+        while (seconds > 3599) {
+            hours++;
+            seconds -= 3600;
+        }
+
+        while (seconds > 59) {
+            minutes++;
+            seconds -= 60;
+        }
+
+        System.out.println(hours + " " + minutes + " " + seconds);
+
+
         return List.of("Hello");
 
     }
@@ -89,8 +107,6 @@ public class TaskController {
         });
 
         return listOfTasks;
-
-
     }
 
     @GetMapping(path = "/sortedTaskByCreatedRange")
